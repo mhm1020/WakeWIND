@@ -1,2 +1,2 @@
-# PhyWIND
-Official implementation of PhyWIND: Physics-Guided Wake Interaction Learning with NWP Error Calibration for Wind Power Forecasting.
+# WakeWIND
+Official implementation of WakeWIND: Dynamic Wake Graph Learning with NWP bias Calibration for Wind Power ForecastingPower Forecasting.
