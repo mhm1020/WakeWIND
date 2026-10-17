@@ -1,4 +1,4 @@
-"""Training and evaluation routines for PhyWIND."""
+"""Training and evaluation routines for WakeWIND."""
 
 from __future__ import annotations
 
@@ -12,10 +12,10 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from .data import PhyWINDDataset, Scalers, move_batch
-from .losses import phywind_loss
+from .data import WakeWINDDataset, Scalers, move_batch
+from .losses import wakewind_loss
 from .metrics import breakdowns, regression_metrics
-from .model import PhyWIND
+from .model import WakeWIND
 
 
 @dataclass
@@ -54,7 +54,7 @@ def seed_everything(seed: int) -> None:
 
 
 @torch.no_grad()
-def evaluate(model: PhyWIND, loader: DataLoader, device: torch.device) -> tuple[dict, np.ndarray, np.ndarray]:
+def evaluate(model: WakeWIND, loader: DataLoader, device: torch.device) -> tuple[dict, np.ndarray, np.ndarray]:
     model.eval()
     predictions, targets = [], []
     for batch in loader:
@@ -65,7 +65,7 @@ def evaluate(model: PhyWIND, loader: DataLoader, device: torch.device) -> tuple[
     return regression_metrics(prediction, target), prediction, target
 
 
-def _loader(dataset: PhyWINDDataset, batch_size: int, shuffle: bool, workers: int) -> DataLoader:
+def _loader(dataset: WakeWINDDataset, batch_size: int, shuffle: bool, workers: int) -> DataLoader:
     return DataLoader(
         dataset,
         batch_size=batch_size,
@@ -77,9 +77,9 @@ def _loader(dataset: PhyWINDDataset, batch_size: int, shuffle: bool, workers: in
 
 def train(
     *,
-    train_set: PhyWINDDataset,
-    val_set: PhyWINDDataset,
-    test_set: PhyWINDDataset | None,
+    train_set: WakeWINDDataset,
+    val_set: WakeWINDDataset,
+    test_set: WakeWINDDataset | None,
     scalers: Scalers,
     positions: np.ndarray,
     rotor_diameter: float,
@@ -100,7 +100,7 @@ def train(
     val_loader = _loader(val_set, config.batch_size, False, config.num_workers)
     test_loader = _loader(test_set, config.batch_size, False, config.num_workers) if test_set else None
 
-    model = PhyWIND(
+    model = WakeWIND(
         history_mean=scalers.history_mean,
         history_std=scalers.history_std,
         nwp_mean=scalers.nwp_mean,
@@ -136,7 +136,7 @@ def train(
             optimizer.zero_grad(set_to_none=True)
             with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_amp):
                 prediction, corrected_nwp = model(history_x, nwp, context, online_error, return_corrected_nwp=True)
-                loss, parts = phywind_loss(
+                loss, parts = wakewind_loss(
                     prediction, target, corrected_nwp, future_era5, weather_mask,
                     quantile=config.quantile, ramp_weight=config.ramp_weight,
                     farm_weight=config.farm_weight, meteorological_weight=config.meteorological_weight,
@@ -177,7 +177,7 @@ def train(
     model.load_state_dict(saved["model_state"])
     val_metrics, val_prediction, val_target = evaluate(model, val_loader, device)
     result: dict = {
-        "model": "PhyWIND",
+        "model": "WakeWIND",
         "best_epoch": saved["best_epoch"],
         "val": val_metrics,
         "model_parameters": sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad),

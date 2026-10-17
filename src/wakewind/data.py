@@ -50,7 +50,7 @@ def fit_scalers(data_dir: Path) -> Scalers:
     )
 
 
-class PhyWINDDataset(Dataset):
+class WakeWINDDataset(Dataset):
     """Normalized model inputs and training-only future ERA5 targets.
 
     Each split file must contain ``X_history``, ``X_nwp``, ``y``,

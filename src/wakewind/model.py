@@ -1,4 +1,4 @@
-"""PhyWIND model definition."""
+"""WakeWIND model definition."""
 
 from __future__ import annotations
 
@@ -97,7 +97,7 @@ class PhysicalWakeGraph(nn.Module):
         return self.norm(mixed + self.ffn(mixed))
 
 
-class PhyWIND(nn.Module):
+class WakeWIND(nn.Module):
     """Physical wake-aware forecasting with adaptive NWP correction."""
 
     def __init__(

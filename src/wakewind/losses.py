@@ -1,4 +1,4 @@
-"""Training objectives for PhyWIND."""
+"""Training objectives for WakeWIND."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ def pinball_loss(prediction: torch.Tensor, target: torch.Tensor, quantile: float
     return 2.0 * torch.maximum(quantile * error, (quantile - 1.0) * error).mean()
 
 
-def phywind_loss(
+def wakewind_loss(
     prediction: torch.Tensor,
     target: torch.Tensor,
     corrected_nwp: torch.Tensor,
@@ -24,7 +24,7 @@ def phywind_loss(
     farm_weight: float = 0.20,
     meteorological_weight: float = 1.0,
 ) -> tuple[torch.Tensor, dict[str, float]]:
-    """Four-term objective used for the reported PhyWIND configuration."""
+    """Four-term objective used for the reported WakeWIND configuration."""
     power = pinball_loss(prediction, target, quantile)
     ramp = F.l1_loss(prediction[:, 1:] - prediction[:, :-1], target[:, 1:] - target[:, :-1])
     farm = pinball_loss(prediction.mean(dim=-1), target.mean(dim=-1), quantile)

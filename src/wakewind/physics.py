@@ -1,4 +1,4 @@
-"""Physical wake geometry used by PhyWIND."""
+"""Physical wake geometry used by WakeWIND."""
 
 from __future__ import annotations
 
@@ -58,7 +58,7 @@ def load_layout(path: str | Path) -> tuple[np.ndarray, np.ndarray, float]:
     if not np.isfinite(rotor).all() or np.any(rotor <= 0.0):
         raise ValueError("Rotor diameters must be finite and positive.")
     if not np.allclose(rotor, rotor[0]):
-        raise ValueError("PhyWIND currently assumes a common rotor diameter.")
+        raise ValueError("WakeWIND currently assumes a common rotor diameter.")
     return turbine_ids[order].astype(np.int64), positions, float(rotor[0])
 
 

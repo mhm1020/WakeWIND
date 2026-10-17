@@ -1,10 +1,10 @@
-# PhyWIND
+# WakeWIND
 
-Official PyTorch implementation of **PhyWIND**, a physical wake-aware model for multi-turbine wind-power forecasting with adaptive numerical weather prediction (NWP) correction.
+Official PyTorch implementation of **WakeWIND**, a physical wake-aware model for multi-turbine wind-power forecasting with adaptive numerical weather prediction (NWP) correction.
 
 ## Model
 
-PhyWIND contains only the final model components:
+WakeWIND contains only the final model components:
 
 - a shared multiscale temporal encoder for historical weather and power;
 - adaptive correction of future NWP wind components using causal online error;
@@ -18,8 +18,8 @@ The training objective contains four terms: turbine-level pinball loss, ramp los
 ## Installation
 
 ```bash
-conda create -n phywind python=3.10
-conda activate phywind
+conda create -n wakewind python=3.10
+conda activate wakewind
 pip install -r requirements.txt
 ```
 
@@ -68,7 +68,7 @@ Run seeds `42`, `43`, and `44` independently and report their mean and sample st
 
 ```text
 .
-├── src/phywind/
+├── src/wakewind/
 │   ├── data.py       # Sample loading and causal context construction
 │   ├── losses.py     # Four-term training objective
 │   ├── metrics.py    # MAE, RMSE, R², turbine and horizon metrics

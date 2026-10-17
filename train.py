@@ -1,4 +1,4 @@
-"""Train PhyWIND on preprocessed multi-turbine samples."""
+"""Train WakeWIND on preprocessed multi-turbine samples."""
 
 from __future__ import annotations
 
@@ -13,9 +13,9 @@ import torch
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from phywind.data import PhyWINDDataset, SPLITS, fit_scalers
-from phywind.physics import load_layout
-from phywind.trainer import TrainConfig, train
+from wakewind.data import WakeWINDDataset, SPLITS, fit_scalers
+from wakewind.physics import load_layout
+from wakewind.trainer import TrainConfig, train
 
 
 def parse_args() -> argparse.Namespace:
@@ -57,7 +57,7 @@ def main() -> None:
     if missing:
         raise FileNotFoundError(f"Missing split files: {', '.join(missing)}")
     scalers = fit_scalers(args.data_dir)
-    datasets = {split: PhyWINDDataset(args.data_dir / f"{split}.npz", scalers) for split in SPLITS}
+    datasets = {split: WakeWINDDataset(args.data_dir / f"{split}.npz", scalers) for split in SPLITS}
     turbine_ids, positions, rotor_diameter = load_layout(args.layout)
     if not np.array_equal(turbine_ids, datasets["train"].turbine_id.astype(int)):
         raise ValueError("Turbine order in the layout and samples does not match.")
